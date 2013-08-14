@@ -1,0 +1,5 @@
+HelloEndpointsProject/.idea/**
+HelloEndpointsProject/.gradle/**
+HelloEndpointsProject/HelloEndpoints/build/**
+HelloEndpointsProject/local.properties
+*.iml

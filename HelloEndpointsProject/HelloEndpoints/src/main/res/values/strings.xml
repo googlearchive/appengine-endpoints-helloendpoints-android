@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Hello Endpoints</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="toast_no_google_account_selected">No Google Account Selected</string>
+  <string name="toast_exception_checking_authorization">Exception checking authorization</string>
+  <string name="toast_no_google_accounts_registered">No Google Accounts Registered</string>
+  <string name="toast_only_one_google_account_registered">Your only registered Google account was
+    selected
+  </string>
+
+</resources>

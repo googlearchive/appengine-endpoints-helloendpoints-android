@@ -1,0 +1,75 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:0.5.+'
+    }
+}
+
+apply plugin: 'android'
+
+repositories {
+    mavenCentral()
+    maven {
+        url 'http://google-api-client-libraries.appspot.com/mavenrepo'
+    }
+}
+
+dependencies {
+    compile 'com.android.support:support-v4:13.0.+'
+
+    // BEGIN Google APIs
+
+    // Play Services will validate the application prior to allowing OAuth2 access.
+    compile(group: 'com.google.android.gms', name: 'play-services', version: '3.2.25')
+
+    // The following lines implement maven imports as defined at:
+    // https://code.google.com/p/google-api-java-client/wiki/Setup
+
+    // Add the Google API client library.
+    compile(group: 'com.google.api-client', name: 'google-api-client', version: '1.15.0-rc') {
+        // Exclude artifacts that the Android SDK/Runtime provides.
+        exclude(group: 'xpp3', module: 'xpp3')
+        exclude(group: 'org.apache.httpcomponents', module: 'httpclient')
+        exclude(group: 'junit', module: 'junit')
+        exclude(group: 'com.google.android', module: 'android')
+    }
+
+    // Add the Android extensions for the Google API client library.
+    // This will automatically include play services as long as you have download that library
+    // from the Android SDK manager.
+    // Add the Android extensions for the Google API client library.
+    compile(group: 'com.google.api-client', name: 'google-api-client-android',
+            version: '1.15.0-rc') {
+        // Exclude play services. Explicitly include it above after you have installed Play
+        // services from the Android SDK manager.
+        exclude(group: 'com.google.android.google-play-services', module: 'google-play-services')
+    }
+
+    // END Google APIs
+
+    // The following client libraries make HTTP/JSON on Android easier.
+
+    // Android extensions for Google HTTP Client.
+    compile(group: 'com.google.http-client', name: 'google-http-client-android',
+            version: '1.15.0-rc') {
+        exclude(group: 'com.google.android', module: 'android')
+    }
+
+    // This is used by the Google HTTP client library.
+    compile(group: 'com.google.guava', name: 'guava', version: '14.0.+')
+
+}
+
+android {
+    compileSdkVersion 17
+    buildToolsVersion "17.0.0"
+
+    defaultConfig {
+        minSdkVersion 8
+        targetSdkVersion 16
+    }
+}
+
+
