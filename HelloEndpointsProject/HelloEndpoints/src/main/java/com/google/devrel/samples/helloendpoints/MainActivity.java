@@ -1,5 +1,6 @@
 package com.google.devrel.samples.helloendpoints;
 
+import android.R.layout;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Intent;
@@ -8,7 +9,11 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,6 +22,7 @@ import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.common.AccountPicker;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.google.api.services.helloworld.Helloworld;
+import com.google.api.services.helloworld.Helloworld.Greetings;
 import com.google.api.services.helloworld.Helloworld.Greetings.Authed;
 import com.google.api.services.helloworld.Helloworld.Greetings.GetGreeting;
 import com.google.api.services.helloworld.Helloworld.Greetings.ListGreeting;
@@ -26,6 +32,10 @@ import com.google.api.services.helloworld.model.GreetingCollection;
 import com.google.common.base.Strings;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 import com.google.devrel.samples.helloendpoints.R.id;
 
@@ -49,6 +59,7 @@ public class MainActivity extends Activity {
 
   private AuthorizationCheckTask mAuthTask;
   private String mEmailAccount = "";
+  private GreetingsDataAdapter listAdapter;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -57,13 +68,19 @@ public class MainActivity extends Activity {
 
     // Prevent the keyboard from being visible upon startup.
     getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
+    ListView listView = (ListView)this.findViewById(R.id.greetings_list_view);
+    listAdapter = new GreetingsDataAdapter((Application)this.getApplication());
+    listView.setAdapter(listAdapter);
   }
 
   @Override
   protected void onDestroy() {
     super.onDestroy();
-    mAuthTask.cancel(true);
-    mAuthTask = null;
+    if (mAuthTask!=null) {
+      mAuthTask.cancel(true);
+      mAuthTask = null;
+    }
   }
 
   @Override
@@ -80,7 +97,7 @@ public class MainActivity extends Activity {
       emailAccountTextView.setText(accountName);
 
       // Fire off the authorization check for this account and OAuth2 scopes.
-      performAuthCheck();
+      performAuthCheck(accountName);
     }
   }
 
@@ -307,13 +324,9 @@ public class MainActivity extends Activity {
       if (DEBUG) {
         Log.d(LOG_TAG, "Displaying " + greetings.length + " greetings.");
       }
-      for (Greeting greeting : greetings) {
-        if (!Strings.isNullOrEmpty(greeting.getMessage())) {
-          Toast.makeText(this, greeting.getMessage(), Toast.LENGTH_LONG).show();
-        } else {
-          Toast.makeText(this, "<empty message>", Toast.LENGTH_LONG).show();
-        }
-      }
+
+      List<Greeting> greetingsList = Arrays.asList(greetings);
+      listAdapter.replaceData(greetings);
     }
   }
 
@@ -337,9 +350,8 @@ public class MainActivity extends Activity {
       Account[] accounts = am.getAccountsByType(GoogleAuthUtil.GOOGLE_ACCOUNT_TYPE);
       if (accounts != null && accounts.length > 0) {
         // Select account and perform authorization check.
-        mEmailAccount = accounts[0].name;
         emailAddressTV.setText(accounts[0].name);
-        performAuthCheck();
+        performAuthCheck(accounts[0].name);
       }
     } else {
       // More than one Google Account is present, a chooser is necessary.
@@ -360,12 +372,7 @@ public class MainActivity extends Activity {
   /**
    * Schedule the authorization check in an {@code Tasks}.
    */
-  public void performAuthCheck() {
-    if (Strings.isNullOrEmpty(mEmailAccount)) {
-      // Email address hasn't been selected so we have nothing to check.
-      return;
-    }
-
+  public void performAuthCheck(String emailAccount) {
     // Cancel previously running tasks.
     if (mAuthTask != null) {
       try {
@@ -378,7 +385,7 @@ public class MainActivity extends Activity {
 
     // Start task to check authorization.
     mAuthTask = new AuthorizationCheckTask();
-    mAuthTask.execute("unused");
+    mAuthTask.execute(emailAccount);
   }
 
   /**
@@ -390,18 +397,19 @@ public class MainActivity extends Activity {
    */
   class AuthorizationCheckTask extends AsyncTask<String, Integer, Boolean> {
     @Override
-    protected Boolean doInBackground(String... unused) {
+    protected Boolean doInBackground(String... emailAccounts) {
       Log.i(LOG_TAG, "Background task started.");
 
       if (!AppConstants.checkGooglePlayServicesAvailable(MainActivity.this)) {
         return false;
       }
 
+      String emailAccount = emailAccounts[0];
       // Ensure only one task is running at a time.
       mAuthTask = this;
 
       // Ensure an email was selected.
-      if (Strings.isNullOrEmpty(mEmailAccount)) {
+      if (Strings.isNullOrEmpty(emailAccount)) {
         publishProgress(R.string.toast_no_google_account_selected);
         // Failure.
         return false;
@@ -416,9 +424,10 @@ public class MainActivity extends Activity {
         // an error will be thrown.
         GoogleAccountCredential credential = GoogleAccountCredential.usingAudience(
             MainActivity.this, AppConstants.AUDIENCE);
-        credential.setSelectedAccountName(mEmailAccount);
+        credential.setSelectedAccountName(emailAccount);
 
         String accessToken = credential.getToken();
+
         if (DEBUG) {
           Log.d(LOG_TAG, "AccessToken retrieved");
         }
@@ -469,4 +478,48 @@ public class MainActivity extends Activity {
     }
   }
 
+  /**
+   * Simple use of an ArrayAdapter but we're using a static class to ensure no references to the
+   * Activity exists.
+   */
+  static class GreetingsDataAdapter extends ArrayAdapter {
+    GreetingsDataAdapter(Application application) {
+      super(application.getApplicationContext(), android.R.layout.simple_list_item_1,
+          application.greetings);
+    }
+
+    void replaceData(Greeting[] greetings) {
+      clear();
+      for (Greeting greeting : greetings) {
+        add(greeting);
+      }
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+      TextView view = (TextView)super.getView(position, convertView, parent);
+
+      Greeting greeting = (Greeting)this.getItem(position);
+
+      StringBuilder sb = new StringBuilder();
+
+      Set<String> fields = greeting.keySet();
+      boolean firstLoop = true;
+      for (String fieldName : fields) {
+        // Append next line chars to 2.. loop runs.
+        if (firstLoop) {
+          firstLoop = false;
+        } else {
+          sb.append("\n");
+        }
+
+        sb.append(fieldName)
+          .append(": ")
+          .append(greeting.get(fieldName));
+      }
+
+      view.setText(sb.toString());
+      return view;
+    }
+  }
 }
