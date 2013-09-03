@@ -43,9 +43,9 @@ by choosing "Rebuild Project."
 with the location of your deployed API. `DEFAULT_ROOT_URL` should include
 your App Engine app ID.
 
-## At this point you can deploy the app and all anonymous API calls will work.
-## The authenticated API call will not work; continue on to configure the
-## Android application to securely communicate with your backend sample.
+***NOTE: At this point you can deploy the app and all anonymous API calls will work. 
+The authenticated API call will not work; continue on to configure the Android
+application to securely communicate with your backend sample.***
 
 1. Register an Android Application to access your Google Cloud Endpoints
 backend project.
