@@ -4,4 +4,5 @@ HelloEndpointsProject/HelloEndpoints/build/**
 HelloEndpointsProject/HelloEndpoints/src/main/gen/**
 HelloEndpointsProject/local.properties
 *.iml
+pom.xml
 out/**

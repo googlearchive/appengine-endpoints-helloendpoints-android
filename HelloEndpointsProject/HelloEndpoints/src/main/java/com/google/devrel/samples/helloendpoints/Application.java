@@ -16,7 +16,7 @@
 package com.google.devrel.samples.helloendpoints;
 
 import com.google.api.client.util.Lists;
-import com.google.api.services.helloworld.model.Greeting;
+import com.appspot.your_app_id.helloworld.model.Greeting;
 
 import java.util.ArrayList;
 
