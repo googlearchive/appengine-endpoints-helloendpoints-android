@@ -15,8 +15,8 @@
 
 package com.google.devrel.samples.helloendpoints;
 
+import com.appspot.your_app_id.helloworld.model.HelloGreeting;
 import com.google.api.client.util.Lists;
-import com.appspot.your_app_id.helloworld.model.Greeting;
 
 import java.util.ArrayList;
 
@@ -26,5 +26,5 @@ import java.util.ArrayList;
  * TODO(developer): Implement a proper data storage technique for your application.
  */
 public class Application extends android.app.Application {
-  ArrayList<Greeting> greetings = Lists.newArrayList();
+  ArrayList<HelloGreeting> greetings = Lists.newArrayList();
 }

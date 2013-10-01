@@ -39,8 +39,8 @@ import com.appspot.your_app_id.helloworld.Helloworld.Greetings.Authed;
 import com.appspot.your_app_id.helloworld.Helloworld.Greetings.GetGreeting;
 import com.appspot.your_app_id.helloworld.Helloworld.Greetings.ListGreeting;
 import com.appspot.your_app_id.helloworld.Helloworld.Greetings.Multiply;
-import com.appspot.your_app_id.helloworld.model.Greeting;
-import com.appspot.your_app_id.helloworld.model.GreetingCollection;
+import com.appspot.your_app_id.helloworld.model.HelloGreeting;
+import com.appspot.your_app_id.helloworld.model.HelloGreetingCollection;
 import com.google.common.base.Strings;
 
 import java.io.IOException;
@@ -139,16 +139,16 @@ public class MainActivity extends Activity {
     // Use of an anonymous class is done for sample code simplicity. {@code AsyncTasks} should be
     // static-inner or top-level classes to prevent memory leak issues.
     // @see http://goo.gl/fN1fuE @26:00 for an great explanation.
-    AsyncTask<Integer, Void, Greeting> getAndDisplayGreeting =
-        new AsyncTask<Integer, Void, Greeting> () {
+    AsyncTask<Integer, Void, HelloGreeting> getAndDisplayGreeting =
+        new AsyncTask<Integer, Void, HelloGreeting> () {
           @Override
-          protected Greeting doInBackground(Integer... integers) {
+          protected HelloGreeting doInBackground(Integer... integers) {
             // Retrieve service handle using null credential since this is an unauthenticated call.
             Helloworld apiServiceHandle = AppConstants.getApiServiceHandle(null);
 
             try {
               GetGreeting getGreetingCommand = apiServiceHandle.greetings().getGreeting(integers[0]);
-              Greeting greeting = getGreetingCommand.execute();
+              HelloGreeting greeting = getGreetingCommand.execute();
               return greeting;
             } catch (IOException e) {
               Log.e(LOG_TAG, "Exception during API call", e);
@@ -157,7 +157,7 @@ public class MainActivity extends Activity {
           }
 
           @Override
-          protected void onPostExecute(Greeting greeting) {
+          protected void onPostExecute(HelloGreeting greeting) {
             if (greeting!=null) {
               displayGreetings(greeting);
             } else {
@@ -178,16 +178,16 @@ public class MainActivity extends Activity {
     // Use of an anonymous class is done for sample code simplicity. {@code AsyncTasks} should be
     // static-inner or top-level classes to prevent memory leak issues.
     // @see http://goo.gl/fN1fuE @26:00 for an great explanation.
-    AsyncTask<Void, Void, GreetingCollection> getAndDisplayGreeting =
-        new AsyncTask<Void, Void, GreetingCollection> () {
+    AsyncTask<Void, Void, HelloGreetingCollection> getAndDisplayGreeting =
+        new AsyncTask<Void, Void, HelloGreetingCollection> () {
           @Override
-          protected GreetingCollection doInBackground(Void... unused) {
+          protected HelloGreetingCollection doInBackground(Void... unused) {
             // Retrieve service handle using null credential since this is an unauthenticated call.
             Helloworld apiServiceHandle = AppConstants.getApiServiceHandle(null);
 
             try {
               ListGreeting getGreetingCommand = apiServiceHandle.greetings().listGreeting();
-              GreetingCollection greeting = getGreetingCommand.execute();
+              HelloGreetingCollection greeting = getGreetingCommand.execute();
               return greeting;
             } catch (IOException e) {
               Log.e(LOG_TAG, "Exception during API call", e);
@@ -196,9 +196,9 @@ public class MainActivity extends Activity {
           }
 
           @Override
-          protected void onPostExecute(GreetingCollection greeting) {
+          protected void onPostExecute(HelloGreetingCollection greeting) {
             if (greeting!=null && greeting.getItems()!=null) {
-              displayGreetings(greeting.getItems().toArray(new Greeting[] {}));
+              displayGreetings(greeting.getItems().toArray(new HelloGreeting[] {}));
             } else {
               Log.e(LOG_TAG, "No greetings were returned by the API.");
             }
@@ -237,14 +237,14 @@ public class MainActivity extends Activity {
     // Use of an anonymous class is done for sample code simplicity. {@code AsyncTasks} should be
     // static-inner or top-level classes to prevent memory leak issues.
     // @see http://goo.gl/fN1fuE @26:00 for an great explanation.
-    AsyncTask<Void, Void, Greeting> sendGreetings = new AsyncTask<Void, Void, Greeting> () {
+    AsyncTask<Void, Void, HelloGreeting> sendGreetings = new AsyncTask<Void, Void, HelloGreeting> () {
       @Override
-      protected Greeting doInBackground(Void... unused) {
+      protected HelloGreeting doInBackground(Void... unused) {
         // Retrieve service handle using null credential since this is an unauthenticated call.
         Helloworld apiServiceHandle = AppConstants.getApiServiceHandle(null);
 
         try {
-          Greeting greeting = new Greeting();
+          HelloGreeting greeting = new HelloGreeting();
           greeting.setMessage(greetingMessageString);
 
           Multiply multiplyGreetingCommand = apiServiceHandle.greetings().multiply(greetingCount,
@@ -258,7 +258,7 @@ public class MainActivity extends Activity {
       }
 
       @Override
-      protected void onPostExecute(Greeting greeting) {
+      protected void onPostExecute(HelloGreeting greeting) {
         if (greeting!=null) {
           displayGreetings(greeting);
         } else {
@@ -283,10 +283,10 @@ public class MainActivity extends Activity {
     // Use of an anonymous class is done for sample code simplicity. {@code AsyncTasks} should be
     // static-inner or top-level classes to prevent memory leak issues.
     // @see http://goo.gl/fN1fuE @26:00 for an great explanation.
-    AsyncTask<Void, Void, Greeting> getAuthedGreetingAndDisplay =
-        new AsyncTask<Void, Void, Greeting> () {
+    AsyncTask<Void, Void, HelloGreeting> getAuthedGreetingAndDisplay =
+        new AsyncTask<Void, Void, HelloGreeting> () {
           @Override
-          protected Greeting doInBackground(Void... unused) {
+          protected HelloGreeting doInBackground(Void... unused) {
             if (!isSignedIn()) {
               return null;
             };
@@ -305,7 +305,7 @@ public class MainActivity extends Activity {
 
             try {
               Authed getAuthedGreetingCommand = apiServiceHandle.greetings().authed();
-              Greeting greeting = getAuthedGreetingCommand.execute();
+              HelloGreeting greeting = getAuthedGreetingCommand.execute();
               return greeting;
             } catch (IOException e) {
               Log.e(LOG_TAG, "Exception during API call", e);
@@ -314,7 +314,7 @@ public class MainActivity extends Activity {
           }
 
           @Override
-          protected void onPostExecute(Greeting greeting) {
+          protected void onPostExecute(HelloGreeting greeting) {
             if (greeting!=null) {
               displayGreetings(greeting);
             } else {
@@ -326,7 +326,7 @@ public class MainActivity extends Activity {
     getAuthedGreetingAndDisplay.execute((Void)null);
   }
 
-  private void displayGreetings(Greeting... greetings) {
+  private void displayGreetings(HelloGreeting... greetings) {
     String msg;
     if (greetings==null || greetings.length < 1) {
       msg = "Greeting was not present";
@@ -336,7 +336,7 @@ public class MainActivity extends Activity {
         Log.d(LOG_TAG, "Displaying " + greetings.length + " greetings.");
       }
 
-      List<Greeting> greetingsList = Arrays.asList(greetings);
+      List<HelloGreeting> greetingsList = Arrays.asList(greetings);
       listAdapter.replaceData(greetings);
     }
   }
@@ -362,6 +362,7 @@ public class MainActivity extends Activity {
       if (accounts != null && accounts.length > 0) {
         // Select account and perform authorization check.
         emailAddressTV.setText(accounts[0].name);
+        mEmailAccount = accounts[0].name;
         performAuthCheck(accounts[0].name);
       }
     } else {
@@ -499,9 +500,9 @@ public class MainActivity extends Activity {
           application.greetings);
     }
 
-    void replaceData(Greeting[] greetings) {
+    void replaceData(HelloGreeting[] greetings) {
       clear();
-      for (Greeting greeting : greetings) {
+      for (HelloGreeting greeting : greetings) {
         add(greeting);
       }
     }
@@ -510,7 +511,7 @@ public class MainActivity extends Activity {
     public View getView(int position, View convertView, ViewGroup parent) {
       TextView view = (TextView)super.getView(position, convertView, parent);
 
-      Greeting greeting = (Greeting)this.getItem(position);
+      HelloGreeting greeting = (HelloGreeting)this.getItem(position);
 
       StringBuilder sb = new StringBuilder();
 
