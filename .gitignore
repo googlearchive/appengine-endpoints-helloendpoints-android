@@ -1,9 +1,8 @@
 HelloEndpointsProject/.idea/**
 HelloEndpointsProject/.gradle/**
+HelloEndpointsProject/local.properties
 HelloEndpointsProject/HelloEndpoints/build/**
 HelloEndpointsProject/HelloEndpoints/src/main/gen/**
-# Temporarily commenting this out since Android Studio requires the file unless you've set an ANDROID_HOME.
-# HelloEndpointsProject/local.properties
 *.iml
 pom.xml
 out/**
