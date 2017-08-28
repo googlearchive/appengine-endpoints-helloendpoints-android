@@ -1,6 +1,12 @@
 appengine-endpoints-helloendpoints-android
 ==========================================
 
+![status: inactive](https://img.shields.io/badge/status-inactive-red.svg)
+
+This project is no longer actively developed or maintained.
+
+For new work on this check out [android-docs-samples](https://github.com/GoogleCloudPlatform/android-docs-samples).
+
 This application is a HelloWorld Android sample application that connects to a
 HelloWorld Google Cloud Endpoints backend sample.
 
